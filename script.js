@@ -3,6 +3,8 @@ const result = document.querySelector(".result");
 const startGameBtn = document.querySelector(".start-game-btn");
 
 const canvas = document.querySelector(".canvas");
+const backgroundSound = createAudio("audio/background.mp3");
+// const chickenSound = createAudio("audio/chicken.mp3");
 
 canvas.width = innerWidth - 40; // padding Size : 40
 canvas.height = innerHeight - 40; // padding Size : 40
@@ -293,6 +295,10 @@ function initGame() {
         }));
     }
 
+    // Play background Sound
+    backgroundSound.play();
+    backgroundSound.volume = 0.1;
+
     animate();
 }
 
@@ -300,6 +306,12 @@ function createImage(path) {
     let img = new Image();
     img.src = path;
     return img
+}
+
+function createAudio(path) {
+    const audio = new Audio();
+    audio.src = path;
+    return audio;
 }
 
 function createParticles(object , color , fades) {
@@ -332,7 +344,7 @@ function gameOver(arr , index) {
         game.active = false;
         scoreEl[1].innerHTML = score;
         result.style.display = "block";
-    }, 2000);
+    }, 500);
 }
 
 function animate() {
@@ -438,6 +450,8 @@ function animate() {
                             (projectile2) => projectile2 === projectile);
                         // Remove invader and projectile
                         if (invaderFound && projectileFound) {
+                            // Sound Effect
+
 
                             createParticles(invader, "#BAA0DE", true);
                             
@@ -542,7 +556,7 @@ addEventListener("keydown", (event) => {
             }));
             break;
     }
-})
+});
 
 addEventListener("keyup", (event) => {
     switch (event.key) {
@@ -566,4 +580,60 @@ addEventListener("keyup", (event) => {
             keys.space.pressed = false;
             break;
     }
-})
+});
+
+window.addEventListener("mousemove", (e) => {
+    player.position = {
+        x: e.clientX - player.width / 2,
+        y: e.clientY - player.height/2
+    }
+    
+    if (player.position.x < 0) {
+        player.position.x = 0;
+    } else if (player.position.x + player.width > canvas.width) {
+        player.position.x = canvas.width - player.width;
+    } else{}
+
+    if (player.position.y < 20) {
+        player.position.y = 20;
+    } else if (player.position.y > canvas.height - player.height - 30) {
+        player.position.y = canvas.height - player.height - 30
+    } else {}
+});
+
+addEventListener("click", () => {
+    keys.space.pressed = true;
+    projectiles.push(new Projectile({
+        position: { x: player.position.x + player.width / 2, y: player.position.y },
+        velocity: { x: 0, y: -2 * speed }
+    }));
+});
+
+addEventListener("mouseup", () => {
+    keys.space.pressed = false;
+});
+
+addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+
+    if(score >= 5000){
+        score -= 5000;
+        scoreEl[0].innerHTML = score;
+        // Kill all Chickens
+        grids.forEach((grid) => {
+            grid.invaders.forEach((invader) => {
+                createParticles(invader, "#BAA0DE", true);
+                                        
+                prizes.push(new Prize({
+                    position: {
+                        x: invader.position.x + invader.width / 2,
+                        y: invader.position.y + invader.height
+                    },
+                    velocity: { x: Math.random(), y: Math.random() * 2 + 2 }
+                }));
+            });
+            grid.invaders = [];
+        });
+        grids = [];
+    }
+});
