@@ -597,6 +597,12 @@ function animate() {
 	grids.forEach((grid, gridIndex) => {
 		grid.update();
 
+		if (grid.invaders.length === 0) {
+			setTimeout(() => {
+				grids.splice(gridIndex, 1);
+			}, 0);
+		}
+
 		// Spawn Projectiles
 		if (frame % 100 === 0 && grid.invaders.length > 0) {
 			const randomNum = Math.floor(Math.random() * grid.invaders.length);
@@ -677,12 +683,6 @@ function animate() {
 				});
 			}
 		});
-
-		if (grid.invaders.length === 0) {
-			setTimeout(() => {
-				grids.splice(gridIndex, 1);
-			}, 0);
-		}
 	});
 
 	projectiles.forEach((projectile, index) => {
