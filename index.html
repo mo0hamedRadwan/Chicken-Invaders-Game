@@ -9,12 +9,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Space Invaders</title>
+    <title>Chicken Invaders</title>
 </head>
 <body>
     
     <div class="score">
         <span>Score: </span><span class="score-num">0</span>
+        <br>
+        <span>Kills: </span><span class="kills-num">0</span>
     </div>
 
     <canvas class="canvas"></canvas>
@@ -24,6 +26,12 @@
             <h2 class="score-num">0</h2>
             <p>Points</p>
             <button class="start-game-btn">Start Game</button>
+        </div>
+    </div>
+
+    <div class="enemy-health">
+        <div class="health-progress">
+            <div class="health"></div>
         </div>
     </div>
 
